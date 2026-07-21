@@ -7,6 +7,7 @@ from upscaler.cache import Cache
 from upscaler.config import Config
 from upscaler.convert import handle_convert
 from upscaler.proxy import handle_proxy
+from upscaler.worker import read_audit
 
 logging.basicConfig(level=getattr(logging, Config.LOG_LEVEL),
                     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -26,6 +27,13 @@ def health():
 @app.route("/cache/stats")
 def stats():
     return jsonify(cache.stats())
+
+
+@app.route("/audit")
+def audit():
+    limit = request.args.get("limit", 100, type=int)
+    records = read_audit(limit)
+    return jsonify(records)
 
 
 @app.route("/convert", methods=["POST"])
