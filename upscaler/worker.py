@@ -71,8 +71,13 @@ class Worker:
         in_w, in_h = self._get_dims(image_data)
 
         if self._should_skip(image_data, pre_dims=(in_w, in_h)):
-            logger.debug("Resolution above threshold (%dx%d), passing through %s",
-                         in_w, in_h, url[:80])
+            logger.debug("Resolution above threshold (%dx%d) >= %d, passing through %s",
+                         in_w, in_h, Config.UPSCALE_THRESHOLD, url[:80])
+            app_log("INFO", "↗ Skipped (over threshold)",
+                    status="skip",
+                    url=url[:200], engine=self.engine.name,
+                    in_w=in_w, in_h=in_h,
+                    size_in_mb=round(len(image_data) / (1024 * 1024), 2))
             return image_data
 
         if not self.engine.validate():

@@ -7,58 +7,10 @@
       "pluginId": "loki"
     }
   ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": ">=10.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "loki",
-      "name": "Loki",
-      "version": ">=3.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "logs",
-      "name": "Logs"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat"
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series"
-    }
-  ],
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": true,
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
   "panels": [
     {
       "type": "stat",
-      "title": "总超分页数",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
+      "title": "超分",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -77,7 +29,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -100,7 +52,167 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" |= \"\\\"msg\\\":\\\"✅\" [48h]))",
+          "expr": "sum(count_over_time({stream=\"json\"} [48h]))",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "滤过",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange"
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" [48h]))",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "跳过率",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "noValue": "-",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 1
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 6,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" [48h])) / (sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" [48h])) + sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" [48h]))) * 100",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "失败",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 9,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"fail\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -109,10 +221,6 @@
     {
       "type": "stat",
       "title": "平均耗时",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -141,128 +249,14 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
-        "x": 4,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "textMode": "value"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" |= \"\\\"msg\\\":\\\"✅\" | json | unwrap elapsed [48h]))",
-          "queryType": "instant",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "title": "最大输出",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "noValue": "-",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "semi-dark-blue"
-              }
-            ]
-          },
-          "unit": "decmbytes",
-          "decimals": 1
-        }
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 8,
-        "y": 0
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "textMode": "value"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "editorMode": "code",
-          "expr": "max(max_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" |= \"\\\"msg\\\":\\\"✅\" | json | unwrap size_out_mb [48h]))",
-          "queryType": "instant",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "title": "失败次数",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "noValue": "0",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
+        "w": 3,
         "x": 12,
         "y": 0
       },
-      "id": 4,
+      "id": 5,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "center",
         "reduceOptions": {
           "calcs": [
@@ -278,7 +272,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"fail\\\"\" [48h]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap elapsed [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -286,96 +280,7 @@
     },
     {
       "type": "timeseries",
-      "title": "耗时 P50 / P95 / P99",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 15,
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            }
-          },
-          "unit": "s"
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 3
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.50, {stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [5m]))",
-          "legendFormat": "P50",
-          "queryType": "range",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.95, {stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [5m]))",
-          "legendFormat": "P95",
-          "queryType": "range",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.99, {stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [5m]))",
-          "legendFormat": "P99",
-          "queryType": "range",
-          "refId": "C"
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "title": "超分速率 (页 / 5 min)",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
+      "title": "超分/滤过/失败 堆叠 (5min)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -388,7 +293,7 @@
             "spanNulls": true,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             }
           },
           "unit": "short"
@@ -396,8 +301,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 8,
+        "x": 0,
         "y": 3
       },
       "id": 6,
@@ -419,20 +324,38 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |= \"\\\"msg\\\":\\\"✅\" [5m]))",
-          "legendFormat": "超分页数",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" [5m]))",
+          "legendFormat": "超分",
           "queryType": "range",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" [5m]))",
+          "legendFormat": "滤过",
+          "queryType": "range",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"fail\" [5m]))",
+          "legendFormat": "失败",
+          "queryType": "range",
+          "refId": "C"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "文件尺寸 (原图 vs 超分)",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
+      "title": "跳过率 %",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -440,7 +363,7 @@
           },
           "custom": {
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 15,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
             "showPoints": "auto",
@@ -450,14 +373,16 @@
               "mode": "none"
             }
           },
-          "unit": "decmbytes"
+          "unit": "percent",
+          "min": 0,
+          "max": 100
         }
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 11
+        "w": 8,
+        "x": 8,
+        "y": 3
       },
       "id": 7,
       "options": {
@@ -481,8 +406,67 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap size_in_mb [5m]))",
-          "legendFormat": "原图",
+          "expr": "sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" [5m])) / (sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" [5m])) + sum(count_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" [5m]))) * 100",
+          "legendFormat": "跳过率",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "耗时 P50/P95/P99",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 3
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg(quantile_over_time(0.50,{stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap elapsed [5m]))",
+          "legendFormat": "P50",
           "queryType": "range",
           "refId": "A"
         },
@@ -492,20 +476,27 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap size_out_mb [5m]))",
-          "legendFormat": "超分",
+          "expr": "avg(quantile_over_time(0.95,{stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap elapsed [5m]))",
+          "legendFormat": "P95",
           "queryType": "range",
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg(quantile_over_time(0.99,{stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap elapsed [5m]))",
+          "legendFormat": "P99",
+          "queryType": "range",
+          "refId": "C"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "分辨率变化 (宽度)",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
+      "title": "滤过图片分辨率",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -528,11 +519,81 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 8,
+        "x": 0,
         "y": 11
       },
-      "id": 8,
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" | json | unwrap in_w [5m]))",
+          "legendFormat": "滤过图宽",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"skip\" | json | unwrap in_h [5m]))",
+          "legendFormat": "滤过图高",
+          "queryType": "range",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "超分前后尺寸",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "unit": "decmbytes"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 11
+      },
+      "id": 10,
       "options": {
         "legend": {
           "calcs": [
@@ -554,7 +615,76 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap in_w [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap size_in_mb [5m]))",
+          "legendFormat": "原图",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap size_out_mb [5m]))",
+          "legendFormat": "超分",
+          "queryType": "range",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "超分分辨率变化",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "unit": "pixel"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap in_w [5m]))",
           "legendFormat": "原图宽",
           "queryType": "range",
           "refId": "A"
@@ -565,7 +695,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap out_w [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |= \"status\\\":\\\"ok\" | json | unwrap out_w [5m]))",
           "legendFormat": "超分宽",
           "queryType": "range",
           "refId": "B"
@@ -574,18 +704,14 @@
     },
     {
       "type": "logs",
-      "title": "实时日志流",
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
+      "title": "实时日志",
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
         "y": 19
       },
-      "id": 9,
+      "id": 12,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
@@ -601,7 +727,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "{stream=\"json\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | line_format \"{{.msg}}  {{.in_w}}x{{.in_h}}→{{.out_w}}x{{.out_h}}  {{.size_in_mb}}→{{.size_out_mb}}MB  {{.elapsed}}s\"",
+          "expr": "{stream=\"json\"} | json | line_format \"{{.msg}}  {{.in_w}}x{{.in_h}}{{if .out_w}}→{{.out_w}}x{{.out_h}}  {{.size_in_mb}}→{{.size_out_mb}}MB  {{.elapsed}}s{{end}}\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -623,14 +749,9 @@
       "10s",
       "30s",
       "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h"
+      "5m"
     ]
   },
-  "timezone": "browser",
   "title": "Suwayomi Upscaler",
-  "uid": "suwayomi-upscaler",
-  "version": 1
+  "uid": "suwayomi-upscaler"
 }
