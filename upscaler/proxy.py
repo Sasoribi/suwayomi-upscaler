@@ -38,6 +38,9 @@ def handle_proxy(path: str, query_string: str) -> Response:
     # ▸ Tag every outbound fetch so it can never loop back to us.
     fetch_headers = {LOOP_HEADER: "1"}
 
+    # ▸ Thumbnails are tiny — grab and return directly, no GPU wasted.
+    is_thumbnail = "thumbnail" in url
+
     with fetch_semaphore:
         try:
             resp = requests.get(url, headers=fetch_headers,
@@ -48,6 +51,10 @@ def handle_proxy(path: str, query_string: str) -> Response:
 
     if resp.status_code != 200:
         return Response(resp.content, status=resp.status_code,
+                        content_type=resp.headers.get("Content-Type", "image/jpeg"))
+
+    if is_thumbnail:
+        return Response(resp.content,
                         content_type=resp.headers.get("Content-Type", "image/jpeg"))
 
     try:
