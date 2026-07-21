@@ -214,8 +214,10 @@ class Worker:
 
                 avg_r = r_sum / n; avg_g = g_sum / n; avg_b = b_sum / n
 
-                # Normal grayscale output: R ≈ G ≈ B. Skip if already balanced.
-                if abs(avg_r - avg_g) < 8 and abs(avg_g - avg_b) < 8:
+                # Only fix severe pink cast (MoltenVK channel swap).  Normal
+                # grayscale or subtly toned pages (sepia etc.) pass through.
+                max_diff = max(abs(avg_r - avg_g), abs(avg_r - avg_b), abs(avg_g - avg_b))
+                if max_diff < 20:
                     return result_data
 
                 logger.info("🔧 Fixing MoltenVK color cast (R=%.0f G=%.0f B=%.0f) → grayscale",
