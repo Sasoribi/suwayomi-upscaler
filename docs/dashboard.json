@@ -52,7 +52,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"ok\" [48h]))",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -102,7 +102,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"skip\" [48h]))",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -158,7 +158,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"skip\" [48h])) / (sum(count_over_time({stream=\"json\"} | json | status=\"skip\" [48h])) + sum(count_over_time({stream=\"json\"} | json | status=\"ok\" [48h]))) * 100",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [48h])) / (sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [48h])) + sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [48h]))) * 100",
           "queryType": "instant",
           "refId": "A"
         }
@@ -212,7 +212,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"fail\" [48h]))",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.fail\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -272,8 +272,8 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"ok\" | unwrap elapsed [48h]))",
-          "queryType": "instant",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [48h]))",
+          "queryType": "range",
           "refId": "A"
         }
       ]
@@ -374,7 +374,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"ok\" [5m]))",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "超分"
@@ -385,7 +385,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"skip\" [5m]))",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "滤过"
@@ -396,7 +396,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"fail\" [5m]))",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.fail\" [5m]))",
           "queryType": "range",
           "refId": "C",
           "legendFormat": "失败"
@@ -456,7 +456,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} | json | status=\"skip\" [5m])) / (sum(count_over_time({stream=\"json\"} | json | status=\"skip\" [5m])) + sum(count_over_time({stream=\"json\"} | json | status=\"ok\" [5m]))) * 100",
+          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [5m])) / (sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [5m])) + sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [5m]))) * 100",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "跳过率"
@@ -515,7 +515,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.50,{stream=\"json\"} | json | status=\"ok\" | unwrap elapsed [5m]))",
+          "expr": "avg(quantile_over_time(0.50,{stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "P50"
@@ -526,7 +526,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.95,{stream=\"json\"} | json | status=\"ok\" | unwrap elapsed [5m]))",
+          "expr": "avg(quantile_over_time(0.95,{stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "P95"
@@ -537,7 +537,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.99,{stream=\"json\"} | json | status=\"ok\" | unwrap elapsed [5m]))",
+          "expr": "avg(quantile_over_time(0.99,{stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
           "queryType": "range",
           "refId": "C",
           "legendFormat": "P99"
@@ -596,7 +596,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"skip\" | unwrap in_w [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.skip\" | json | unwrap in_w [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "滤过宽"
@@ -607,7 +607,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"skip\" | unwrap in_h [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.skip\" | json | unwrap in_h [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "滤过高"
@@ -665,7 +665,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"ok\" | unwrap size_in_mb [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap size_in_mb [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "原图"
@@ -676,7 +676,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"ok\" | unwrap size_out_mb [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap size_out_mb [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "超分"
@@ -734,7 +734,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"ok\" | unwrap in_w [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap in_w [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "原图宽"
@@ -745,7 +745,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} | json | status=\"ok\" | unwrap out_w [5m]))",
+          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap out_w [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "超分宽"
