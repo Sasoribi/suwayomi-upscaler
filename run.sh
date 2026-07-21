@@ -19,6 +19,13 @@ export LOG_LEVEL="${LOG_LEVEL:-INFO}"
 
 mkdir -p "$CACHE_DIR" "$LOG_DIR"
 
+# Kill any lingering process on this port (prevents "Connection in use" on restart)
+lsof -ti:"$PORT" | xargs kill 2>/dev/null
+for i in $(seq 1 10); do
+    lsof -ti:"$PORT" >/dev/null 2>&1 || break
+    sleep 0.5
+done
+
 echo ""
 echo "╔══════════════════════════════════════════════╗"
 echo "║   Suwayomi Upscaler — realcugan (M4 GPU)    ║"
