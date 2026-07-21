@@ -14,6 +14,7 @@ from PIL import Image
 from upscaler.cache import Cache
 from upscaler.config import Config
 from upscaler.engines import get_engine, UpscaleEngine
+from upscaler.logutil import app_log
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,10 @@ class Worker:
         in_mb = len(image_data) / (1024 * 1024)
         logger.info("🎨 Upscaling %s [%dx%d, %.2fMB] with %s",
                      url[:80], in_w, in_h, in_mb, self.engine.name)
+        app_log("INFO", "🎨 Upscaling",
+                status="upscale_start",
+                url=url[:200], engine=self.engine.name,
+                in_w=in_w, in_h=in_h, size_in_mb=round(in_mb, 2))
 
         with tempfile.NamedTemporaryFile(suffix=".png") as infile, \
              tempfile.NamedTemporaryFile(suffix=".png") as outfile:
@@ -98,6 +103,11 @@ class Worker:
                 elapsed = time.time() - _start
                 logger.warning("❌ Upscale failed for %s [%dx%d] after %.1fs, passing through",
                                url[:80], in_w, in_h, elapsed)
+                app_log("WARNING", "❌ Upscale failed",
+                        status="fail",
+                        url=url[:200], engine=self.engine.name,
+                        in_w=in_w, in_h=in_h, elapsed=round(elapsed, 2),
+                        size_in=len(image_data))
                 self._audit("fail", url, in_w=in_w, in_h=in_h, elapsed=elapsed,
                             size_in=len(image_data))
                 return image_data
@@ -111,6 +121,13 @@ class Worker:
         ratio = len(result) / len(image_data)
         logger.info("✅ Upscale complete [%dx%d → %dx%d, %.2fMB → %.2fMB, %.1fx, %.1fs]",
                      in_w, in_h, out_w, out_h, in_mb, out_mb, ratio, elapsed)
+
+        app_log("INFO", "✅ Upscale complete",
+                status="ok",
+                url=url[:200], engine=self.engine.name,
+                in_w=in_w, in_h=in_h, size_in_mb=round(in_mb, 2),
+                out_w=out_w, out_h=out_h, size_out_mb=round(out_mb, 2),
+                ratio=round(ratio, 1), elapsed=round(elapsed, 2))
 
         self._audit("ok", url,
                     in_w=in_w, in_h=in_h, size_in=len(image_data),

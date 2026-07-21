@@ -9,6 +9,8 @@ from upscaler.convert import handle_convert
 from upscaler.proxy import handle_proxy
 from upscaler.worker import read_audit
 
+# Logging is configured by gunicorn.conf.py (JSON → logs/app.jsonl).
+# Fallback for non-gunicorn runs (e.g. flask dev server, pytest):
 logging.basicConfig(level=getattr(logging, Config.LOG_LEVEL),
                     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
