@@ -94,8 +94,15 @@ class Worker:
 
         with tempfile.NamedTemporaryFile(suffix=".png") as infile, \
              tempfile.NamedTemporaryFile(suffix=".png") as outfile:
-            infile.write(image_data)
-            infile.flush()
+            # Convert to clean RGB PNG before feeding to engine.
+            # WebP / RGBA on MoltenVK can produce pink snow artifacts.
+            try:
+                with Image.open(BytesIO(image_data)) as _tmp:
+                    _tmp = _tmp.convert("RGB")
+                    _tmp.save(infile.name, format="PNG")
+            except Exception:
+                infile.write(image_data)
+                infile.flush()
 
             with gpu_lock:
                 success = self.engine.upscale(
