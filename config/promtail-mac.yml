@@ -1,0 +1,49 @@
+# Promtail config — Mac (upscaler)
+# Run: promtail --config.file config/promtail-mac.yml
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /Users/sasoribi/tools/suwayomi-upscaler/config/promtail-positions.yml
+
+clients:
+  - url: http://192.168.1.143:3100/loki/api/v1/push
+
+scrape_configs:
+  # ═══ app.jsonl — structured JSON (metric queries use this) ═══
+  - job_name: upscaler-json
+    static_configs:
+      - targets: [localhost]
+        labels:
+          app: upscaler
+          host: mac-m4
+          stream: json
+          __path__: /Users/sasoribi/tools/suwayomi-upscaler/logs/app.jsonl
+
+  # ═══ audit.jsonl — structured JSON ═══
+  - job_name: upscaler-audit
+    static_configs:
+      - targets: [localhost]
+        labels:
+          app: upscaler
+          host: mac-m4
+          stream: audit
+          __path__: /Users/sasoribi/tools/suwayomi-upscaler/cache/audit.jsonl
+
+  # ═══ access/error logs — human-readable, for debugging only ═══
+  - job_name: upscaler-raw
+    static_configs:
+      - targets: [localhost]
+        labels:
+          app: upscaler
+          host: mac-m4
+          stream: raw
+          __path__: /Users/sasoribi/tools/suwayomi-upscaler/logs/access.log
+      - targets: [localhost]
+        labels:
+          app: upscaler
+          host: mac-m4
+          stream: raw
+          __path__: /Users/sasoribi/tools/suwayomi-upscaler/logs/error.log
