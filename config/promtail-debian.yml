@@ -1,0 +1,72 @@
+# Promtail config — Debian (nginx + Suwayomi)
+# Install: download from https://github.com/grafana/loki/releases
+# Run:     promtail --config.file /etc/promtail/config.yml
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/lib/promtail/positions.yml
+
+clients:
+  - url: http://<LOKI_HOST>:3100/loki/api/v1/push   # ← 替换为你 Loki 的地址
+
+scrape_configs:
+  # ── nginx access log (Suwayomi) ──
+  # 前置条件: nginx Docker 容器需挂载 /var/log/nginx/ 到宿主机
+  #   docker run ... -v /var/log/nginx-suwayomi:/var/log/nginx ...
+  # 或在现有容器上添加:
+  #   1. cp -r /var/log/nginx/ /home/sasoribi/docker/nginx-proxy/logs/ (先拷贝出来)
+  #   2. 重新创建容器，加 -v /home/sasoribi/docker/nginx-proxy/logs:/var/log/nginx
+  - job_name: nginx-suwayomi-access
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<remote>\S+) - (?P<auth>\S+) \[(?P<ts>[^\]]+)\] "(?P<method>\S+) (?P<path>\S+) \S+" (?P<status>\d+) (?P<size>\d+) "(?P<referer>[^"]*)" "(?P<ua>[^"]*)"'
+      - labels:
+          app: nginx
+          stream: suwayomi_access
+          host: debian-nuc
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          app: nginx
+          stream: suwayomi_access
+          host: debian-nuc
+          __path__: /var/log/nginx-suwayomi/suwayomi_access.log
+
+  # ── nginx error log ──
+  - job_name: nginx-error
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<ts>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<level>\w+)\] (?P<msg>.*)'
+      - labels:
+          app: nginx
+          stream: error
+          host: debian-nuc
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          app: nginx
+          stream: error
+          host: debian-nuc
+          __path__: /var/log/nginx-suwayomi/error.log
+
+  # ── Suwayomi Server (需要先落地日志) ──
+  # 运行 Suwayomi 时加:  ./jre/bin/java -jar ./bin/Suwayomi-Server.jar >> /var/log/suwayomi/server.log 2>&1
+  - job_name: suwayomi
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<ts>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[.,]\d+) +\[(?P<thread>[^\]]+)\] +\[(?P<level>\w+)\] (?P<msg>.*)'
+      - labels:
+          app: suwayomi
+          host: debian-nuc
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          app: suwayomi
+          host: debian-nuc
+          __path__: /var/log/suwayomi/server.log
