@@ -47,6 +47,7 @@ echo "╚═══════════════════════�
 echo ""
 
 exec "$DIR/venv/bin/gunicorn" upscaler.app:app \
+    --preload \
     --bind "0.0.0.0:$PORT" \
     --worker-class gevent \
     --workers 2 \
