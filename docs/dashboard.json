@@ -316,7 +316,16 @@
         "textMode": "value"
       },
       "targets": [
-        "count_over_time({stream=\"json\"} [48h]) * 0 + 2400"
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "count_over_time({stream=\"json\"} [48h]) * 0 + 2400",
+          "queryType": "instant",
+          "refId": "A"
+        }
       ]
     },
     {
