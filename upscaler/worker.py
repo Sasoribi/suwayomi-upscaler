@@ -22,9 +22,12 @@ class Worker:
         self.cache = cache or Cache()
 
     def process(self, url: str, image_data: bytes) -> bytes:
+        import time as _time
+        _start = _time.time()
+
         cached = self.cache.get(url)
         if cached is not None:
-            logger.debug("Cache hit for %s", url[:80])
+            logger.debug("Cache hit for %s (%.0fms)", url[:80], (_time.time() - _start) * 1000)
             return cached
 
         if self._should_skip(image_data):
@@ -35,7 +38,9 @@ class Worker:
             logger.warning("Engine %s not available, passing through", self.engine.name)
             return image_data
 
-        logger.info("Upscaling %s with %s", url[:80], self.engine.name)
+        in_mb = len(image_data) / (1024 * 1024)
+        logger.info("🎨 Upscaling %s [%.2fMB] with %s",
+                     url[:80], in_mb, self.engine.name)
 
         with tempfile.NamedTemporaryFile(suffix=".png") as infile, \
              tempfile.NamedTemporaryFile(suffix=".png") as outfile:
@@ -50,15 +55,21 @@ class Worker:
                 )
 
             if not success:
-                logger.warning("Upscale failed for %s, passing through", url[:80])
+                elapsed = _time.time() - _start
+                logger.warning("❌ Upscale failed for %s after %.1fs, passing through",
+                               url[:80], elapsed)
                 return image_data
 
             outfile.seek(0)
             result = outfile.read()
 
+        elapsed = _time.time() - _start
+        out_mb = len(result) / (1024 * 1024)
+        ratio = len(result) / len(image_data)
+        logger.info("✅ Upscale complete for %s [%.2fMB → %.2fMB, %.1fx, %.1fs]",
+                     url[:80], in_mb, out_mb, ratio, elapsed)
+
         self.cache.put(url, result)
-        logger.info("Upscale complete for %s (%d → %d bytes)",
-                     url[:80], len(image_data), len(result))
         return result
 
     def _should_skip(self, data: bytes) -> bool:
