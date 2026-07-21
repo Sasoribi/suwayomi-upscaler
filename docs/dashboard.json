@@ -1,31 +1,51 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_LOKI",
-      "label": "Loki",
-      "type": "datasource",
-      "pluginId": "loki"
-    }
-  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 20,
+  "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "type": "stat",
-      "title": "超分",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "mappings": [],
           "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "semi-dark-blue"
+                "color": "semi-dark-blue",
+                "value": null
               }
             ]
-          }
-        }
+          },
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -38,13 +58,19 @@
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "center",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
@@ -56,26 +82,34 @@
           "queryType": "instant",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "超分",
+      "type": "stat"
     },
     {
-      "type": "stat",
-      "title": "滤过",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "mappings": [],
           "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "orange"
+                "color": "orange",
+                "value": null
               }
             ]
-          }
-        }
+          },
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -88,13 +122,19 @@
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "center",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
@@ -106,22 +146,31 @@
           "queryType": "instant",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "滤过",
+      "type": "stat"
     },
     {
-      "type": "stat",
-      "title": "跳过率",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -130,8 +179,9 @@
             ]
           },
           "unit": "percent",
-          "decimals": 1
-        }
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -144,13 +194,19 @@
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
@@ -162,30 +218,38 @@
           "queryType": "instant",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "跳过率",
+      "type": "stat"
     },
     {
-      "type": "stat",
-      "title": "失败",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "mappings": [],
           "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
                 "value": 1
               }
             ]
-          }
-        }
+          },
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -198,13 +262,19 @@
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
@@ -216,22 +286,29 @@
           "queryType": "instant",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "失败",
+      "type": "stat"
     },
     {
-      "type": "stat",
-      "title": "平均耗时",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 1,
+          "mappings": [],
           "noValue": "-",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "orange",
@@ -244,8 +321,9 @@
             ]
           },
           "unit": "s",
-          "decimals": 1
-        }
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -258,13 +336,19 @@
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "center",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
@@ -276,27 +360,31 @@
           "queryType": "range",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "平均耗时",
+      "type": "stat"
     },
     {
-      "type": "stat",
-      "title": "阈值",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "mappings": [],
           "noValue": "2400",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "semi-dark-blue"
+                "color": "semi-dark-blue",
+                "value": null
               }
             ]
           },
-          "unit": "pixel"
-        }
+          "unit": "pixel",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -309,13 +397,19 @@
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
-          ]
+          ],
+          "fields": "",
+          "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
+      "pluginVersion": "10.3.1",
       "targets": [
         {
           "datasource": {
@@ -327,28 +421,70 @@
           "queryType": "instant",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "阈值",
+      "type": "stat"
     },
     {
-      "type": "timeseries",
-      "title": "超分 / 滤过 / 失败 (5min)",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
             "drawStyle": "bars",
             "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "never",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "unit": "short"
-        }
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
@@ -359,6 +495,7 @@
       "id": 7,
       "options": {
         "legend": {
+          "calcs": [],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -376,9 +513,9 @@
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({host=\"mac-m4\"} |~ \"status.:.ok\" [5m]))",
+          "legendFormat": "超分",
           "queryType": "range",
-          "refId": "A",
-          "legendFormat": "超分"
+          "refId": "A"
         },
         {
           "datasource": {
@@ -387,9 +524,9 @@
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({host=\"mac-m4\"} |~ \"status.:.skip\" [5m]))",
+          "legendFormat": "滤过",
           "queryType": "range",
-          "refId": "B",
-          "legendFormat": "滤过"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -398,36 +535,76 @@
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({host=\"mac-m4\"} |~ \"status.:.fail\" [5m]))",
+          "legendFormat": "失败",
           "queryType": "range",
-          "refId": "C",
-          "legendFormat": "失败"
+          "refId": "C"
         }
-      ]
+      ],
+      "title": "超分 / 滤过 / 失败 (5min)",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "跳过率 %",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "auto",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "unit": "percent",
+          "mappings": [],
+          "max": 100,
           "min": 0,
-          "max": 100
-        }
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
@@ -458,34 +635,74 @@
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({host=\"mac-m4\"} |~ \"status.:.skip\" [5m])) / (sum(count_over_time({host=\"mac-m4\"} |~ \"status.:.skip\" [5m])) + sum(count_over_time({host=\"mac-m4\"} |~ \"status.:.ok\" [5m]))) * 100",
+          "legendFormat": "跳过率",
           "queryType": "range",
-          "refId": "A",
-          "legendFormat": "跳过率"
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "跳过率 %",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "耗时 P50 / P95 / P99",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "auto",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "unit": "s"
-        }
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
@@ -517,9 +734,9 @@
           },
           "editorMode": "code",
           "expr": "avg(quantile_over_time(0.50, {host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
+          "legendFormat": "P50",
           "queryType": "range",
-          "refId": "A",
-          "legendFormat": "P50"
+          "refId": "A"
         },
         {
           "datasource": {
@@ -528,9 +745,9 @@
           },
           "editorMode": "code",
           "expr": "avg(quantile_over_time(0.95, {host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
+          "legendFormat": "P95",
           "queryType": "range",
-          "refId": "B",
-          "legendFormat": "P95"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -539,34 +756,74 @@
           },
           "editorMode": "code",
           "expr": "avg(quantile_over_time(0.99, {host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
+          "legendFormat": "P99",
           "queryType": "range",
-          "refId": "C",
-          "legendFormat": "P99"
+          "refId": "C"
         }
-      ]
+      ],
+      "title": "耗时 P50 / P95 / P99",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "滤过图片分辨率",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "auto",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "unit": "pixel"
-        }
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "pixel",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
@@ -598,9 +855,9 @@
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time({host=\"mac-m4\"} |~ \"status.:.skip\" | json | unwrap in_w [5m]))",
+          "legendFormat": "滤过宽",
           "queryType": "range",
-          "refId": "A",
-          "legendFormat": "滤过宽"
+          "refId": "A"
         },
         {
           "datasource": {
@@ -609,34 +866,74 @@
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time({host=\"mac-m4\"} |~ \"status.:.skip\" | json | unwrap in_h [5m]))",
+          "legendFormat": "滤过高",
           "queryType": "range",
-          "refId": "B",
-          "legendFormat": "滤过高"
+          "refId": "B"
         }
-      ]
+      ],
+      "title": "滤过图片分辨率",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "文件尺寸 原图 vs 超分",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "auto",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "unit": "decmbytes"
-        }
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decmbytes",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
@@ -667,9 +964,9 @@
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time({host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap size_in_mb [5m]))",
+          "legendFormat": "原图",
           "queryType": "range",
-          "refId": "A",
-          "legendFormat": "原图"
+          "refId": "A"
         },
         {
           "datasource": {
@@ -678,34 +975,74 @@
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time({host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap size_out_mb [5m]))",
+          "legendFormat": "超分",
           "queryType": "range",
-          "refId": "B",
-          "legendFormat": "超分"
+          "refId": "B"
         }
-      ]
+      ],
+      "title": "文件尺寸 原图 vs 超分",
+      "type": "timeseries"
     },
     {
-      "type": "timeseries",
-      "title": "分辨率 原图 vs 超分",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "auto",
             "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "unit": "pixel"
-        }
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "pixel",
+          "unitScale": true
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 7,
@@ -736,9 +1073,9 @@
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time({host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap in_w [5m]))",
+          "legendFormat": "原图宽",
           "queryType": "range",
-          "refId": "A",
-          "legendFormat": "原图宽"
+          "refId": "A"
         },
         {
           "datasource": {
@@ -747,15 +1084,19 @@
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time({host=\"mac-m4\"} |~ \"status.:.ok\" | json | unwrap out_w [5m]))",
+          "legendFormat": "超分宽",
           "queryType": "range",
-          "refId": "B",
-          "legendFormat": "超分宽"
+          "refId": "B"
         }
-      ]
+      ],
+      "title": "分辨率 原图 vs 超分",
+      "type": "timeseries"
     },
     {
-      "type": "logs",
-      "title": "实时日志",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "gridPos": {
         "h": 9,
         "w": 24,
@@ -767,9 +1108,11 @@
         "dedupStrategy": "none",
         "enableLogDetails": true,
         "prettifyLogMessage": false,
+        "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
-        "sortOrder": "Descending"
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
       },
       "targets": [
         {
@@ -782,15 +1125,20 @@
           "queryType": "range",
           "refId": "A"
         }
-      ]
+      ],
+      "title": "实时日志",
+      "type": "logs"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 38,
+  "schemaVersion": 39,
   "tags": [
     "suwayomi",
     "upscaler"
   ],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-2d",
     "to": "now"
@@ -803,6 +1151,17 @@
       "5m"
     ]
   },
+  "timezone": "",
   "title": "Suwayomi Upscaler",
-  "uid": "suwayomi-upscaler"
+  "uid": "suwayomi-upscaler",
+  "version": 17,
+  "weekStart": "",
+  "__inputs": [
+    {
+      "name": "DS_LOKI",
+      "label": "Loki",
+      "type": "datasource",
+      "pluginId": "loki"
+    }
+  ]
 }
