@@ -1,0 +1,1 @@
+"""Suwayomi Upscale Proxy — AI-powered manga image upscaling proxy service."""

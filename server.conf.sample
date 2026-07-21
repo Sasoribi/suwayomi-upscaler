@@ -1,0 +1,20 @@
+# Suwayomi server.conf snippet — add to enable download upscale
+# Only needed if you want DOWNLOADED chapters to be upscaled too
+
+downloadConversions {
+  "image/jpeg" {
+    target = "http://127.0.0.1:8765/convert"
+    callTimeout = 120s
+    connectTimeout = 10s
+  }
+  "image/png" {
+    target = "http://127.0.0.1:8765/convert"
+    callTimeout = 120s
+    connectTimeout = 10s
+  }
+  "image/webp" {
+    target = "http://127.0.0.1:8765/convert"
+    callTimeout = 120s
+    connectTimeout = 10s
+  }
+}

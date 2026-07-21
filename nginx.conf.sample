@@ -1,0 +1,27 @@
+# Nginx configuration for Suwayomi + upscale proxy
+# Place in your nginx server block
+
+upstream suwayomi {
+    server 127.0.0.1:4567;
+}
+
+upstream upscaler {
+    server 127.0.0.1:8765;
+}
+
+server {
+    listen 80;
+
+    # Reading path: all image requests → upscale proxy (transparent)
+    location /api/v1/manga/ {
+        proxy_pass http://upscaler;
+        proxy_read_timeout 120s;
+        proxy_buffering off;
+    }
+
+    # Everything else → Suwayomi directly
+    location / {
+        proxy_pass http://suwayomi;
+        proxy_read_timeout 60s;
+    }
+}
