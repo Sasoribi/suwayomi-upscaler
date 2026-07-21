@@ -127,11 +127,6 @@ class Worker:
             outfile.seek(0)
             result = outfile.read()
 
-        # Fix MoltenVK color channel inversion on Apple Silicon.
-        # realcugan via MoltenVK sometimes produces BGR-order or pink-shifted
-        # output. Detect and correct by swapping R↔B when the output shows
-        # an unnatural color cast on what should be grayscale manga pages.
-        result = self._fix_moltenvk_colors(image_data, result)
 
         elapsed = time.time() - _start
         out_w, out_h = self._get_dims(result)
@@ -171,64 +166,6 @@ class Worker:
             return w >= Config.UPSCALE_THRESHOLD or h >= Config.UPSCALE_THRESHOLD
         except Exception:
             return True
-
-    @staticmethod
-    def _is_grayscale(data: bytes) -> bool:
-        """Check if an image is mostly grayscale (i.e. manga page, not color art)."""
-        try:
-            with Image.open(BytesIO(data)) as img:
-                if img.mode == 'L':
-                    return True  # pure grayscale — common for manga pages
-                img_rgb = img.convert("RGB")
-                w, h = img_rgb.size
-                # Sample evenly across the image
-                gray = color = 0
-                for y in range(0, h, max(1, h // 20)):
-                    for x in range(0, w, max(1, w // 20)):
-                        r, g, b = img_rgb.getpixel((x, y))
-                        if abs(r - g) < 6 and abs(g - b) < 6:
-                            gray += 1
-                        else:
-                            color += 1
-                return gray > 0 and gray / (gray + color) > 0.95
-        except Exception:
-            return False
-
-    @classmethod
-    def _fix_moltenvk_colors(cls, src_data: bytes, result_data: bytes) -> bytes:
-        """Detect and fix MoltenVK BGR/pink cast on Apple Silicon for grayscale manga."""
-        if not cls._is_grayscale(src_data):
-            return result_data
-
-        try:
-            with Image.open(BytesIO(result_data)) as img:
-                img = img.convert("RGB")
-                w, h = img.size
-                r_sum = g_sum = b_sum = n = 0
-                for y in range(0, h, max(1, h // 20)):
-                    for x in range(0, w, max(1, w // 20)):
-                        r, g, b = img.getpixel((x, y))
-                        r_sum += r; g_sum += g; b_sum += b; n += 1
-                if n < 10:
-                    return result_data
-
-                avg_r = r_sum / n; avg_g = g_sum / n; avg_b = b_sum / n
-
-                # Only fix severe pink cast (MoltenVK channel swap).  Normal
-                # grayscale or subtly toned pages (sepia etc.) pass through.
-                max_diff = max(abs(avg_r - avg_g), abs(avg_r - avg_b), abs(avg_g - avg_b))
-                if max_diff < 20:
-                    return result_data
-
-                logger.info("🔧 Fixing MoltenVK color cast (R=%.0f G=%.0f B=%.0f) → grayscale",
-                            avg_r, avg_g, avg_b)
-                img = img.convert("L")
-                buf = BytesIO()
-                img.save(buf, format="PNG")
-                return buf.getvalue()
-        except Exception:
-            pass
-        return result_data
 
     @staticmethod
     def _audit(status: str, url: str, **fields) -> None:
