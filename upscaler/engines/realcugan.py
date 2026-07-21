@@ -40,13 +40,14 @@ class RealCUGANEngine(UpscaleEngine):
         return ok or True
 
     def upscale(self, input_path, output_path, scale=2, timeout=None) -> bool:
+        sync_gap = os.getenv("REALCUGAN_SYNC_GAP", "2")
         ok, stderr = self._run(
             [
                 self.BINARY,
                 "-i", str(input_path),
                 "-o", str(output_path),
                 "-s", str(scale),
-                "-c", "1",
+                "-c", sync_gap,
                 "-m", self._find_model(),
                 "-g", "0",
             ],
