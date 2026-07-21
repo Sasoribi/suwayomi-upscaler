@@ -52,7 +52,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [48h]))",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -102,7 +102,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [48h]))",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -158,7 +158,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [48h])) / (sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [48h])) + sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [48h]))) * 100",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" [48h])) / (sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" [48h])) + sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" [48h]))) * 100",
           "queryType": "instant",
           "refId": "A"
         }
@@ -212,7 +212,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.fail\" [48h]))",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"fail\\\"\" [48h]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -272,7 +272,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [48h]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [48h]))",
           "queryType": "range",
           "refId": "A"
         }
@@ -280,7 +280,7 @@
     },
     {
       "type": "stat",
-      "title": "阈值px",
+      "title": "阈值",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -294,7 +294,8 @@
                 "color": "semi-dark-blue"
               }
             ]
-          }
+          },
+          "unit": "pixel"
         }
       },
       "gridPos": {
@@ -322,7 +323,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "count_over_time({stream=\"json\"} [48h]) * 0 + 2400",
+          "expr": "count_over_time({host=\"mac-m4\"} [48h]) * 0 + 2400",
           "queryType": "instant",
           "refId": "A"
         }
@@ -330,7 +331,7 @@
     },
     {
       "type": "timeseries",
-      "title": "超分/滤过/失败 堆叠",
+      "title": "超分 / 滤过 / 失败 (5min)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -374,7 +375,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [5m]))",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "超分"
@@ -385,7 +386,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [5m]))",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "滤过"
@@ -396,7 +397,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.fail\" [5m]))",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"fail\\\"\" [5m]))",
           "queryType": "range",
           "refId": "C",
           "legendFormat": "失败"
@@ -456,7 +457,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [5m])) / (sum(count_over_time({stream=\"json\"} |~ \"status.:.skip\" [5m])) + sum(count_over_time({stream=\"json\"} |~ \"status.:.ok\" [5m]))) * 100",
+          "expr": "sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" [5m])) / (sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" [5m])) + sum(count_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" [5m]))) * 100",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "跳过率"
@@ -465,7 +466,7 @@
     },
     {
       "type": "timeseries",
-      "title": "耗时 P50/P95/P99",
+      "title": "耗时 P50 / P95 / P99",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -515,7 +516,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.50,{stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
+          "expr": "avg(quantile_over_time(0.50, {host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "P50"
@@ -526,7 +527,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.95,{stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
+          "expr": "avg(quantile_over_time(0.95, {host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "P95"
@@ -537,7 +538,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(quantile_over_time(0.99,{stream=\"json\"} |~ \"status.:.ok\" | json | unwrap elapsed [5m]))",
+          "expr": "avg(quantile_over_time(0.99, {host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap elapsed [5m]))",
           "queryType": "range",
           "refId": "C",
           "legendFormat": "P99"
@@ -596,7 +597,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.skip\" | json | unwrap in_w [5m]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" | json | unwrap in_w [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "滤过宽"
@@ -607,7 +608,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.skip\" | json | unwrap in_h [5m]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"skip\\\"\" | json | unwrap in_h [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "滤过高"
@@ -665,7 +666,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap size_in_mb [5m]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap size_in_mb [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "原图"
@@ -676,7 +677,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap size_out_mb [5m]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap size_out_mb [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "超分"
@@ -734,7 +735,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap in_w [5m]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap in_w [5m]))",
           "queryType": "range",
           "refId": "A",
           "legendFormat": "原图宽"
@@ -745,7 +746,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg(avg_over_time({stream=\"json\"} |~ \"status.:.ok\" | json | unwrap out_w [5m]))",
+          "expr": "avg(avg_over_time({host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | unwrap out_w [5m]))",
           "queryType": "range",
           "refId": "B",
           "legendFormat": "超分宽"
@@ -777,7 +778,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "{stream=\"json\"} | json | line_format \"{{.msg}}  {{.in_w}}x{{.in_h}}{{if .out_w}}→{{.out_w}}x{{.out_h}}  {{.size_in_mb}}→{{.size_out_mb}}MB  {{.elapsed}}s{{end}}\"",
+          "expr": "{host=\"mac-m4\"} |= \"\\\"status\\\":\\\"ok\\\"\" | json | line_format \"{{.msg}}  {{.in_w}}x{{.in_h}}→{{.out_w}}x{{.out_h}}  {{.size_in_mb}}→{{.size_out_mb}}MB  {{.elapsed}}s\"",
           "queryType": "range",
           "refId": "A"
         }
